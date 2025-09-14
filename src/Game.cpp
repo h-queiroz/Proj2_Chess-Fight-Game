@@ -11,13 +11,48 @@ Game::Game() {
     // SFML doc recommended to never use the 2 lines below together
     // m_mainWindow.setVerticalSyncEnabled(true); // VSync
     m_mainWindow.setFramerateLimit(60); // Setting to be 60FPS
+
+    // Setting up the board
+    m_board[0][1] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::BLACK);
+    m_board[1][1] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::BLACK);
+    m_board[2][1] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::BLACK);
+    m_board[3][1] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::BLACK);
+    m_board[4][1] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::BLACK);
+    m_board[5][1] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::BLACK);
+    m_board[6][1] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::BLACK);
+    m_board[7][1] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::BLACK);
+    m_board[0][0] = std::make_unique<Piece>(Piece::Type::ROOK, Piece::Color::BLACK);
+    m_board[7][0] = std::make_unique<Piece>(Piece::Type::ROOK, Piece::Color::BLACK);
+    m_board[1][0] = std::make_unique<Piece>(Piece::Type::KNIGHT, Piece::Color::BLACK);
+    m_board[6][0] = std::make_unique<Piece>(Piece::Type::KNIGHT, Piece::Color::BLACK);
+    m_board[2][0] = std::make_unique<Piece>(Piece::Type::BISHOP, Piece::Color::BLACK);
+    m_board[5][0] = std::make_unique<Piece>(Piece::Type::BISHOP, Piece::Color::BLACK);
+    m_board[3][0] = std::make_unique<Piece>(Piece::Type::QUEEN, Piece::Color::BLACK);
+    m_board[4][0] = std::make_unique<Piece>(Piece::Type::KING, Piece::Color::BLACK);
+
+    m_board[0][6] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::WHITE);
+    m_board[1][6] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::WHITE);
+    m_board[2][6] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::WHITE);
+    m_board[3][6] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::WHITE);
+    m_board[4][6] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::WHITE);
+    m_board[5][6] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::WHITE);
+    m_board[6][6] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::WHITE);
+    m_board[7][6] = std::make_unique<Piece>(Piece::Type::PAWN, Piece::Color::WHITE);
+    m_board[0][7] = std::make_unique<Piece>(Piece::Type::ROOK, Piece::Color::WHITE);
+    m_board[7][7] = std::make_unique<Piece>(Piece::Type::ROOK, Piece::Color::WHITE);
+    m_board[1][7] = std::make_unique<Piece>(Piece::Type::KNIGHT, Piece::Color::WHITE);
+    m_board[6][7] = std::make_unique<Piece>(Piece::Type::KNIGHT, Piece::Color::WHITE);
+    m_board[2][7] = std::make_unique<Piece>(Piece::Type::BISHOP, Piece::Color::WHITE);
+    m_board[5][7] = std::make_unique<Piece>(Piece::Type::BISHOP, Piece::Color::WHITE);
+    m_board[3][7] = std::make_unique<Piece>(Piece::Type::QUEEN, Piece::Color::WHITE);
+    m_board[4][7] = std::make_unique<Piece>(Piece::Type::KING, Piece::Color::WHITE);
 };
+
 
 // Game Loop;
 void Game::run() {
     int windowXOffset = 200;
     int windowYOffset = 100;
-    m_board[0][0] = std::make_unique<Piece>(Piece::Type::BISHOP, Piece::Color::BLACK);
 
     sf::Texture piecesSpritesheet;
     if (!piecesSpritesheet.loadFromFile("/home/hector/Development/C++/Proj2_Chess-Fight-Game/pieces-spritesheet.png")) {
