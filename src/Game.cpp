@@ -76,9 +76,16 @@ void Game::run() {
             if (event->is<sf::Event::Closed>())
                 m_mainWindow.close();
 
-            if(const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            if(const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
                 if(keyPressed->scancode == sf::Keyboard::Scancode::Escape)
                     m_mainWindow.close();
+
+                // For Debugging
+                if(keyPressed->scancode == sf::Keyboard::Scancode::Space) {
+                    std::cout << m_selectedPiece.get() << std::endl;
+                    std::cout << "Original Position: X-" << m_selectedPieceOriginalPos.x << " Y-" << m_selectedPieceOriginalPos.y << std::endl;
+                }
+            }
 
             // The code below may look wrong with all the mix of Xs and Ys
             // But one Y represent the window X and Y in the direction that we are used to,
@@ -88,19 +95,38 @@ void Game::run() {
                 if(mouseClicked->button == sf::Mouse::Button::Left)
                     for(int x = 0; x < 8; x++)
                         for(int y = 0; y < 8; y++) {
-                            if(m_board[y][x] != nullptr) {
-                                int currentPieceMinXPos = (x * SQUARE_SIZE) + windowYOffset;
-                                int currentPieceMinYPos = (y * SQUARE_SIZE) + windowXOffset;
-                                int currentPieceMaxXPos = ((x * SQUARE_SIZE) + SQUARE_SIZE) + windowYOffset;
-                                int currentPieceMaxYPos = ((y * SQUARE_SIZE) + SQUARE_SIZE) + windowXOffset;
+                            sf::Vector2i mousePos = mouseClicked->position;
 
-                                sf::Vector2i mousePos = mouseClicked->position;
+                            int currentPieceMinXPos = (x * SQUARE_SIZE) + windowYOffset;
+                            int currentPieceMinYPos = (y * SQUARE_SIZE) + windowXOffset;
+                            int currentPieceMaxXPos = ((x * SQUARE_SIZE) + SQUARE_SIZE) + windowYOffset;
+                            int currentPieceMaxYPos = ((y * SQUARE_SIZE) + SQUARE_SIZE) + windowXOffset;
 
-                                if(mousePos.y > currentPieceMinXPos &&  mousePos.y < currentPieceMaxXPos)
-                                    if(mousePos.x > currentPieceMinYPos &&  mousePos.x < currentPieceMaxYPos)
-                                        std::cout << "Clicked in (" <<  x << ',' << y << ")\n";
-                            }
-                    }
+                            if(mousePos.y > currentPieceMinXPos &&  mousePos.y < currentPieceMaxXPos)
+                                if(mousePos.x > currentPieceMinYPos &&  mousePos.x < currentPieceMaxYPos) {
+                                    if(m_board[y][x] == nullptr && m_selectedPiece != nullptr) { // If player clicked on empty space after clicking on piece
+                                        std::cout << "Clicked on Empty Space at (" <<  x << ',' << y << ")\n";
+                                        m_board[y][x] = std::move(m_selectedPiece);
+                                        m_selectedPieceOriginalPos = {8, 8}; // Out of range on purpose
+                                    } else if(m_board[y][x] != nullptr && m_selectedPiece == nullptr) { // If player clicked Piece without selecting another Piece before
+                                        std::cout << "Clicked on Piece at (" <<  x << ',' << y << ")\n";
+                                        m_selectedPiece = std::move(m_board[y][x]);
+                                        m_selectedPieceOriginalPos = {y, x};
+                                    } else if(m_board[y][x] != nullptr && m_selectedPiece != nullptr) { // If player clicked in a Piece while holding one
+                                        m_board[m_selectedPieceOriginalPos.x][m_selectedPieceOriginalPos.y] = std::move(m_selectedPiece);
+                                        m_selectedPiece = std::move(m_board[y][x]);
+                                        m_selectedPieceOriginalPos = {y, x};
+                                    }
+                                }
+
+                        }
+
+            // Simpler and more direct approach to get the grid tile that the user clicked on, the same as above:
+
+            // gridX = (mouse_pixel_X - board_offset_X) / SQUARE_SIZE;
+            // gridY = (mouse_pixel_Y - board_offset_Y) / SQUARE_SIZE;
+
+            // I'm not gonna implement it in my code so I can remember and learn that there's probably a mathematical better approach to a problem.
 
         }
 
